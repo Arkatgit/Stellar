@@ -1,0 +1,1 @@
+enum bool dee = true;enum bool me = false;char c = 'm';main() {enum bool __v0 ; __v0 = ( me) == ( 34) ; if( __v0 ){printbool(me ); }enum bool __v1 ; __v1 = ( c) < ( false) ;  if( __v1) {printfloat(5 ); }else { printbool(me );  } } 

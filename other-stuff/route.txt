@@ -1,0 +1,366 @@
+ Enter Output::newoutput 
+ Leave Output::newoutput 
+ Enter Generator::newGenerator
+ Leave Generator::newGenerator
+Enter Program
+Enter Toplevelstatement  with 
+Enter statement    var
+Enter datadef 
+Enter Expr with '5' 
+Enter Logical Expr 
+Enter realExapr
+Enter AddExpr 
+Enter MulExpr 
+Enter Unary expr  
+Enter Primary 
+Leave Primary 
+Leave Unary  
+Leave MulExpr  
+Leave Addexpr
+Leave relexpr
+Leave Logical Expr
+Leave Expr 
+Leave Datadeff
+Leave Statement 
+Leave Toplevelstatement 
+Enter Toplevelstatement  with 
+Enter statement    var
+Enter datadef 
+Leave Datadeff
+Leave Statement 
+Leave Toplevelstatement 
+Enter Toplevelstatement  with 
+Enter statement    if
+Enter ExecStatement 
+Enter ifstatement 
+Enter Expr with 'm' 
+Enter Logical Expr 
+Enter realExapr
+Enter AddExpr 
+Enter MulExpr 
+Enter Unary expr  
+Enter Primary 
+
+
+ Assigning Type to ' m'  type = 0 
+
+Leave Primary 
+Leave Unary  
+Leave MulExpr  
+Leave Addexpr
+Enter AddExpr 
+Enter MulExpr 
+Enter Unary expr  
+Enter Primary 
+Leave Primary 
+Leave Unary  
+Leave MulExpr  
+Leave Addexpr
+Leave relexpr
+Leave Logical Expr
+Leave Expr 
+Enter Expr with 'm' 
+Enter Logical Expr 
+Enter realExapr
+Enter AddExpr 
+Enter MulExpr 
+Enter Unary expr  
+Enter Primary 
+
+
+ Assigning Type to ' m'  type = 0 
+
+Leave Primary 
+Leave Unary  
+Leave MulExpr  
+Leave Addexpr
+Enter AddExpr 
+Enter MulExpr 
+Enter Unary expr  
+Enter Primary 
+Leave Primary 
+Leave Unary  
+Leave MulExpr  
+Leave Addexpr
+Leave relexpr
+Enter realExapr
+Enter AddExpr 
+Enter MulExpr 
+Enter Unary expr  
+Enter Primary 
+
+
+ Assigning Type to ' n'  type = 0 
+
+Leave Primary 
+Leave Unary  
+Leave MulExpr  
+Leave Addexpr
+Enter AddExpr 
+Enter MulExpr 
+Enter Unary expr  
+Enter Primary 
+Leave Primary 
+Leave Unary  
+Leave MulExpr  
+Leave Addexpr
+Leave relexpr
+Leave Logical Expr
+Leave Expr 
+Leave ifstatement
+leave ExecStatement 
+Leave Statement 
+Leave Toplevelstatement 
+Leave Program 
+Enter 'ifstatment' line 3  
+Enter expression  Line  with  kind  1
+Enter expression - bianary  Line 3 
+Enter expression  Line  with  kind  1
+Leave expression  Line 
+Enter expression  Line  with  kind  1
+Leave expression  Line 
+
+
+ if- relationals 
+
+Enter Relational  Line 
+Leave Relational  Line 
+Leave expression  Line 
+Leave Main - statement   
+Enter expression  Line  with  kind  1
+Enter expression - bianary  Line 6 
+Enter expression  Line  with  kind  1
+Enter expression - bianary  Line 6 
+Enter expression  Line  with  kind  1
+Leave expression  Line 
+Enter expression  Line  with  kind  1
+Leave expression  Line 
+
+
+ if- relationals 
+
+Enter Relational  Line 
+Leave Relational  Line 
+Leave expression  Line 
+Enter expression  Line  with  kind  1
+Enter expression - bianary  Line 6 
+Enter expression  Line  with  kind  1
+Leave expression  Line 
+Enter expression  Line  with  kind  1
+Leave expression  Line 
+
+
+ if- relationals 
+
+Enter Relational  Line 
+Leave Relational  Line 
+Leave expression  Line 
+if - logicals 
+Enter Logicals  Line 6
+Leave Logicals  Line 6
+Leave expression  Line 
+Leave Main - statement   
+Leave 'ifstatment' line 3  
+Leave Main - statement   
+here
+
+
+ Enter Generator::EmitAll 
+From symtab -n  
+ Enter Generator::translateVarDeclaration 
+ Enter Output::writes 
+Write::  int n
+ Leave Output::writes 
+ Enter Output::writes 
+Write::  ; 
+ Leave Output::writes 
+ Leave Generator::translateVarDeclaration 
+From symtab -m  
+ Enter Generator::translateVarDeclaration 
+ Enter Generator::translateExpression 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Leave Generator::translateExpression 
+ Enter Output::writes 
+Write::  int m
+ Leave Output::writes 
+ Enter Output::writes 
+Write::  = 5;
+ Leave Output::writes 
+ Enter Generator::delString
+ Leave Generator::delString
+ Leave Generator::translateVarDeclaration 
+From symtab -printbool  
+From symtab -printfloat  
+From symtab -get_float  
+From symtab -ShowMeanTable  
+From symtab -get_int  
+From symtab -gp_suminfinity  
+From symtab -gp_nterm  
+From symtab -ap_sumnterms  
+From symtab -ap_nterm  
+From symtab -combination  
+From symtab - permutation  
+From symtab -factorial  
+From symtab -sortfloatarray  
+From symtab -sortintarray  
+From symtab -dupfloatarray  
+From symtab -dupintarray  
+From symtab -multiplyints  
+From symtab -addints  
+ Enter Output::writes 
+Write:: main() {
+ Leave Output::writes 
+ Enter Generator::translateStatements 
+ Enter Generator::translateIf 
+ Enter Generator::translateExpression 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Enter Generator::translateOperation 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Enter Generator::translateRelationals 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Enter Generator::maketempVar
+ Enter Generator::maketempVar 
+ Enter Output::writes 
+Write:: enum bool __v0 ; 
+ Leave Output::writes 
+ Enter Generator::translateExpression 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Leave Generator::translateExpression 
+ Enter Generator::translateExpression 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Leave Generator::translateExpression 
+ Enter Output::writes 
+Write:: __v0 = ( m) == ( 5) ; 
+ Leave Output::writes 
+ Enter Generator::delString
+ Leave Generator::delString
+ Leave Generator::translateOperation 
+ Enter Generator::delString
+ Leave Generator::delString
+ Leave Generator::translateExpression 
+ Enter Output::writes 
+Write:: if( 
+ Leave Output::writes 
+ Enter Output::writes 
+Write:: __v0 ){
+ Leave Output::writes 
+ Enter Generator::delString
+ Leave Generator::delString
+ Enter Generator::translateStatements 
+ Leave Generator::translateStatements 
+ Enter Output::writes 
+Write:: }
+ Leave Output::writes 
+ Enter Generator::translateExpression 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Enter Generator::translateOperation 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Enter Generator::translateLogicals 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Enter Generator::maketempVar
+ Enter Generator::maketempVar 
+ Enter Output::writes 
+Write::  enum bool __v1 ; 
+ Leave Output::writes 
+ Enter Generator::translateExpression 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Enter Generator::translateOperation 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Enter Generator::translateRelationals 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Enter Generator::maketempVar
+ Enter Generator::maketempVar 
+ Enter Output::writes 
+Write:: enum bool __v2 ; 
+ Leave Output::writes 
+ Enter Generator::translateExpression 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Leave Generator::translateExpression 
+ Enter Generator::translateExpression 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Leave Generator::translateExpression 
+ Enter Output::writes 
+Write:: __v2 = ( m) == ( 4) ; 
+ Leave Output::writes 
+ Enter Generator::delString
+ Leave Generator::delString
+ Leave Generator::translateOperation 
+ Enter Generator::delString
+ Leave Generator::delString
+ Leave Generator::translateExpression 
+ Enter Generator::translateExpression 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Enter Generator::translateOperation 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Enter Generator::translateRelationals 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Enter Generator::maketempVar
+ Enter Generator::maketempVar 
+ Enter Output::writes 
+Write:: enum bool __v3 ; 
+ Leave Output::writes 
+ Enter Generator::translateExpression 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Leave Generator::translateExpression 
+ Enter Generator::translateExpression 
+ Enter Generator::newStringptr 
+ Leave Generator::newStringptr
+ Leave Generator::translateExpression 
+ Enter Output::writes 
+Write:: __v3 = ( n) != ( 3) ; 
+ Leave Output::writes 
+ Enter Generator::delString
+ Leave Generator::delString
+ Leave Generator::translateOperation 
+ Enter Generator::delString
+ Leave Generator::delString
+ Leave Generator::translateExpression 
+ Enter Output::writes 
+Write:: __v1 = (__v2) && ( __v3 );
+ Leave Output::writes 
+ Leave Generator::translateLogicals 
+ Enter Generator::delString
+ Leave Generator::delString
+ Leave Generator::translateOperation 
+ Enter Generator::delString
+ Leave Generator::delString
+ Leave Generator::translateExpression 
+ Enter Output::writes 
+Write:: else if( __v1) {
+ Leave Output::writes 
+ Enter Generator::translateStatements 
+ Leave Generator::translateStatements 
+ Enter Output::writes 
+Write:: }
+ Leave Output::writes 
+ Enter Generator::delString
+ Leave Generator::delString
+  Generator::TranslateIf 
+ Leave Generator::translateStatements 
+ Enter Output::writes 
+Write:: }
+ Leave Output::writes 
+ Enter Output::writes 
+ Enter Output::flushouput 
+ Leave Output::flushouput 
+ Leave Output::writes 
+ Leave Generator::EmitAll 
+main -end

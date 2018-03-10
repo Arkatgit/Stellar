@@ -1,0 +1,737 @@
+#include "symtab.h"
+#include "generator.h"
+
+
+
+
+
+
+static struct EmitAll(struct codegen *g,struct Statement * p)
+{
+	struct output_w * t;
+	t =g->writer;
+	t->write(t,"main {",NULL );
+	translateStatements(g,p);
+	t->write(t,"}",NULL);
+	
+}	
+static struct EmitGlobalDeclaration(struct codegen  * g )
+{
+	struct Symbol * s;
+	enum Symkind t;
+	struct output_w  * t;
+	t = g->writer;
+	t->write(t, "enum bool{ false , true };",NULL);		//enum to take care of the bool type in source; 
+	
+	while( (s = getNextSymb(0)) != NULL )
+	{
+		t =  s->k;
+		if(s->t->Tok == Toktab)
+		{
+			continue;
+		}	
+		if(t == Var || t == Const )
+		{
+			translateVarDeclaration(g , s);
+		}
+		else if(t == Array)
+		{
+			translateArrayDeclaration(g ,s);
+		}
+		else if(t == Func)
+		{
+			translateFunctionDeclaration(g , s);
+		}
+	}
+}
+
+static void  translateVarDeclaration( struct codgen * g, struct Symbol  *s )
+{
+	struct output_w  * t;
+	enum SymType  a; 
+	t = g->writer;
+	char * q; 	
+	if(s->k == Const)
+	{	
+		if( (a = s->type) == integer )
+		{
+			t->write( t ,"const int ",s->t->lexeme , NULL);
+		}
+		else if(a ==  real )
+		{
+			t->write(t ,"const float ",s->t->lexeme,NULL);  
+		}
+		else if(a == charac )
+		{
+			t->write(t,"const char ", s->t->lexeme , NULL );
+		}
+		else
+		{
+			t->write(t, "const emum bool ",s->t->lexeme ,NULL);
+		}
+		
+		q = translateExpression(g, s->e);
+		t->write(t , " = " , q ,";",  NULL);
+		delString(q);
+	}
+	else
+	{
+		//Var 
+		if( (a = s->type) == integer )
+		{
+			t->write( t ," int ",s->t->lexeme , NULL);
+		}
+		else if(a ==  real )
+		{
+			t->write(t ," float ",s->t->lexeme,NULL);  
+		}
+		else if(a == charac )
+		{
+			t->write(t,"char ", s->t->lexeme , NULL );
+		}
+		else
+		{
+			t->write(t, " bool ",s->t->lexeme ,NULL);
+		}
+		if(s->e  != NULL)
+		{
+			q = translateExpression(g, s->e);
+			t->write(t , " = " , q , ";" , NULL);
+			delString(q);
+		}	
+		else
+		{
+			t->write(t," ; ", NULL );
+		}
+	}
+  }
+
+static void translateArrayDeclaration(struct codegen * g, struct Symbol * s)
+{
+	struct output_w  * t;
+	t = g->writer;
+	enum SymType a;
+	char * q;
+	if( (a = s->type) == integer )
+	{
+		t->write( t ," int ", NULL );
+	}	
+	else if(a  ==  real)
+	{
+		t->write(t , "float ", NULL);
+	}
+	else	//bools
+	{
+		t->write(t,"enum bool " , NULL);
+	}
+	q = translateExpression( g , s->e);
+	t->write(t ,s->t->lexeme,"[",q,"] "," ; ", NULL);
+	delString(q);
+	return;
+}
+
+static void translateFunctionDeclaration(struct codegen * g,struct Symbol * s)
+{
+	struct output_w  * t;
+	t =  g->writer;
+	enum SymType a;
+	struct Symbol * sy;
+	int count = 0; 
+	char * q;
+	if( (a = s->type)  == integer)
+	{
+		t->write(t ,"int ",s->t->lexeme ,"(", NULL);
+	}
+	else if(a == real)
+	{
+		t->write(t," float ",s->t->lexeme,"(",  NULL );
+	}
+	else if(a == charac)
+	{
+		t->write(t ,"char ",s->t->lexeme ,"(", NULL);
+	}
+	else if(a == boolean)
+	{
+		t->write(t ,"enum bool ",s->t->lexeme ,"(", NULL);
+	}
+	else 
+	{
+		//void
+		t->write(t ,"void ",s->t->lexeme ,"(", NULL);
+	}
+	while( (sy = getNextSymb(1)) && sy->arg == 1 )
+	{
+		if(count == 0)
+		{
+			q = translateType(g , sy);
+			count++;
+			t->write(t, q ,NULL);
+		}
+		else
+		{
+			t->write(t,"," , q ,NULL );
+		}	
+	}
+	if(count  == 0)
+	{
+		t->write(t," void ",NULL);
+	}
+	t->write( t ," ); ",NULL);
+	
+}
+
+static char * translateType(struct codegen * g , struct Symbol * s )
+{
+	struct output_w  * t;
+	t =  g->writer;
+	enum SymType a;
+	char * d ,* q;
+	d = newStringptr(512);
+	if( (a = sy->type)  == integer)
+		{
+			strcpy(d , " int " );
+		}
+	else if(a == real)
+	{
+		strcpy(d , " real " );
+	}
+	else if(a == boolean)
+	{
+		strcpy(d , " enum bool " );
+	}
+	else
+	{
+		strcpy(d , "char ");
+	}
+	d = multStringCat( d ," ", s->t->lexeme , NULL);
+	
+	if(sy->k = Array)
+	{ 
+		q = translateExpression( g ,  s->e)
+		d = multStringCat(d ,"[", q ,"]" , NULL);
+		delString(q);
+	}
+	return d;
+}
+
+static void EmitFunction(struct codegen *g,struct FunctionDef *f )
+{
+	struct Symbol *s;
+	struct output_w  * t;
+	t =  g->writer;
+	s = f->name;
+	char * q;
+	int count = 0; 
+	switch(s->type)
+	{
+		case integer:
+				t->write(t," int ",s->t->lexeme , "(" , NULL );
+				break;
+		case real:		
+				t->write(t," float ",s->t->lexeme , "(" , NULL );
+				break;
+		case charac:
+				t->write(t," char ",s->t->lexeme , "(" , NULL );
+				break;
+		case voi:
+				t->write(t," void ",s->t->lexeme, "(", NULL );
+				break;
+		case boolean:
+				t->write(t, "enum bool ",s->t->lexeme,"(", NULL);
+				break;
+	}
+	
+	for(s = s->other_info ; s != NULL  ;  s = s->other_info)
+	{
+		q = translateType( g , s );
+		if(count == 0)
+		{
+			t->write(t ,q ,NULL );
+			count++; 
+		}
+		else
+		{
+			t->write(t ," ," q );
+		}
+		
+	}
+	t->write(t," ) { ", NULL );
+	
+	emitLocalDeclaration(g , s );
+	translateStatements(g ,f->body );
+	t->write(t," } ", NULL);
+	return;
+} 
+
+static char * multStringCat(char * desc , char *src1, ... )
+{
+	va_list ap;
+	char * a ,* b;
+	a  =  strcat(desc , src1);
+	va_start(ap,src1);
+	for( b = va_arg( ap , char *) ;  b != NULL ; b = va_arg(ap , char *) )
+	{
+		strcat(desc, b);
+	}
+	return a;
+}
+
+
+static void emitLocalDeclaration(struct codegen * g , struct Symbol *s)
+{
+	struct Symbol * p;
+	struct output_w t;
+	t =  g->writer;
+	char * q;
+	
+	while(t = getNextSymb(1))
+	{
+		q =  translateType(p);
+		t->write(t , q ,"; ", NULL);	
+	}
+
+}
+static void translateStatements( struct codegen * g , struct Statement  * p )
+{
+	while(p != NULL)
+	{	
+		switch(p->kind)
+		{
+			case If:
+				translateIf(g, p);
+				break;
+			case Assignment:
+				translateAssign(q , p);
+				break;
+			case While:
+				translateWhile(g , p);
+				break;
+			case Return:
+				translateReturn(g , p);
+				break;
+			case FunctionCall:
+				translateFuctCall(g, p);
+				break;
+		
+		}
+		p= p->next;
+	}	
+}
+
+static void translateIf(struct codegen * g , struct Statement * e)
+{
+	struct output_w * t;
+	t = g->writer;
+	char * q;
+	struct Statment * w;
+	t->write(t,"if( ", NULL );
+	q = translateExpression(g , e->stat.i.c);
+	t->write(t , q , " ){", NULL);
+	delString(q);
+	translateStatements( g ,e->stat.i.then);
+	t->write(t, "}", NULL);
+	for(w =  e->stat.i.elseif ; w != NULL ; w = w->next)
+	{	
+		q = translateExpression(g,w->stat.i.c);
+		t->write(t ,"else if( ", q ,") {", NULL);
+		translateStatments(g,w->stat.i.then);
+		t->write(t, "}", NULL);
+		delString(q);
+	
+	}
+	if(e->stat.i.els)
+	{
+		t->write(t,"else { ", NULL);
+		translateStatments(e->stat.i.els);
+		t->write(t," } ", NULL);
+	}
+		
+}
+static void translateFunctCall(struct codegen * g ,struct Statment *p)
+{
+	struct output_w * t;
+	t = g->writer;
+	char * q ;
+	struct Expression * e;
+	t->write(t , p->name->t->lexeme,"(", NULL );
+	int count = 0 ;
+	for( e = p->arglist ; e !=  NULL ; e = e->next )
+	{
+		q = translateExpression(g , e);
+		if(count == 0)
+		{
+			t->write(t , q , NULL);
+			count++;
+		}
+		else
+		{
+			t->write( t , " , ", q , NULL);
+		}
+		delString(q);
+	}
+	t->write(t , p->name->t->lexeme," ); ", NULL );
+	return;
+}
+
+static void translateReturn(struct codegen * g ,struct Statement * p)
+{
+	struct output_w * t;
+	t = g->writer;
+	char * q;
+	struct Expression *e  = p->stat.r.e;  
+	q = translateExpression( g , e);
+ 	t->write(t ," return ", q , " ; " );
+	delString(q);
+	return;
+}
+static void translateWhile(struct codegen * g , struct Statement *p)
+{
+	struct output_w * t;
+	t = g->writer;
+	struct Expression * e =  p->stat.w.c;
+	q = translateExpression( g , e);
+	t->write(t," while( ", q , ") { "  );
+	translateStatements(g , p->stat.w.body);
+	t->write(t," } ", NULL);
+	delString(q);
+	return;
+} 
+
+static void translateAssign(struct codegen * g ,  struct Statment * p)
+{
+	struct output_w * t;
+	t = g->writer;
+	char * a;
+	char * b;
+	a = translateExpression( g , p->stat.a.desc);
+	b = translateExpression( g , p->stat.a.src);
+	t->write(t , a , " = " , b , " ; ", NULL);
+	delString(a);
+	delString(b);
+	return;
+}
+
+static char * translateExpression(struct codegen * g,struct Expression * e)
+{
+	enum NodeKind kind;
+	char * temp ,  *p ;
+	temp = newStringptr(512); 
+	kind = e->kind;
+	if(kind == Operand)
+	{
+		strcpy(temp , e->node.operand.t->lexeme);
+	}
+	else if(kind == Operator)
+	{
+		p = translateOperation(g, e);
+		strcpy(temp, p);
+		delString(p);	
+	}
+	else
+	{
+		temp[0] = '\0'; 
+	}
+
+	return temp;
+}
+
+static char * translateOperation(struct codegen * g ,struct Expression * e)
+{
+	char * temp,temp2 ;
+	temp = newStringptr(512);
+	enum Exop t;
+	t = e->node.oper.oper;
+	switch(t)
+	{
+		case And:
+		case Or:
+		case Not:
+		temp2 = translateLogicals(g , e);
+		break;
+		
+		case Eq:
+		case Lt:
+		case Gt:
+		case Lte:
+		case Gte:
+		case Neq:
+		temp2 = translateRelationals(g , e);
+		break;
+		
+		case Plus:
+		case Minus:
+		case Mul:
+		case Div:
+		temp2 = translateArithmetics(g , e);
+		break;
+		
+		case Uplus:
+		case Uminus:
+		temp2  =  translateUnary(g , e);
+		break;
+		
+		case Fcall:
+		temp2 = translateFcall(g , e);
+		break;
+		case Array_Access:
+		temp2 = translateArray(g ,e);
+		break;
+		case Mod:
+		temp2 = translateMod(g , e);
+		break; 
+	}
+	strcpy(temp , temp2);
+	delString(temp2);
+	return temp;	
+}
+
+static char * translateLogicals(struct codegen * g, struct Expression * e)
+{
+	struct output_w * t;
+	t = g->writer;
+	char * temp , * temp2 , * temp3;
+	enum Exop a;
+	temp = newStringptr(512);
+	strcpy(temp,maketempVar());
+	t->write(t," enum bool ",temp," ; ",NULL);
+	a = e->node.oper.oper;
+	struct Expression *  l = e->node.oper.lop;
+	struct Expression  * r = e->node.oper.rop;
+	if(a == And)
+	{
+		temp2 = translateExpression(g , l);
+		temp3 = translateExpression(g , r);
+		t->write(t , temp ," = (" , temp2, ") && ( ", temp3 ," );",NULL );
+	}
+	else if(a == Or)
+	{
+		temp2 = translateExpression(g , l);
+		temp3 = translateExpression(g , r);
+		t->write(t ,temp, " =  ( ",temp2 , " ) || ( " ,temp3 ," ) ;" , NULL );
+	}
+	else
+	{				//logical not
+		temp2 = translateExpression(g , r);
+		t->write(t ,temp , " = !(" ,temp2,") ", NULL);	
+		
+	}
+	return temp;
+}
+
+static char * translateRelationals(struct codegen *  g, struct Expression * e)
+{
+	struct output_w * t;
+	t = g->writer;
+	struct Expression * l =  e->node.oper.lop;
+	struct Expression * r = e->node.oper.rop;
+	char * temp ,* temp2 , * temp3 ;
+	enum Exop a = e->node.oper.oper;
+	temp = newStringptr(512);
+	strcpy(temp,maketempVar());
+	t->write(t,"enum bool ",temp , " ; " , NULL  )
+	temp2 = translateExpression(g , l );
+	temp3 = translateExpression(g , r);	
+	
+	if(a == Eq)
+	{
+		t->write(t ,temp," = ( ", temp2,") == ( ",temp3,") ; ",NULL );
+	}
+	else if(a ==  Lt)
+	{
+		t->write(t ,temp," = ( ", temp2,") < ( ",temp3,") ; ",NULL );
+	}
+	else if(a ==  Gt)
+	{
+		t->write(t ,temp," = ( ", temp2,") > ( ",temp3,") ; ",NULL );
+	}
+	else if(a ==  Lte)
+	{
+		t->write(t ,temp," = ( ", temp2,") <= ( ",temp3,") ; ",NULL );
+	}
+	else if(a ==  Gte)
+	{
+		t->write(t ,temp," = ( ", temp2,") >= ( ",temp3,") ; ",NULL );
+	}
+	
+	else	//not equall
+	{
+		t->write(t ,temp," = ( ", temp2,") != ( ",temp3,") ; ",NULL );
+	}
+	return temp;	
+}
+
+static char * translateArithmetics(struct codegen * g ,struct Expression * e)
+{
+	struct output_w * t;
+	t = g->writer;
+	char * temp , * temp2, * temp3;
+	struct Expression *l , *r;
+	enum Exop a = e->node.oper.oper;	
+	l =  e->node.oper.lop;
+	r = e->node.oper.rop;
+	temp = newStringptr(512);
+	strcpy(temp , maketempVar());
+	t->write(t, " float " , temp, " ;" ,NULL);
+	temp2 = translateExpresssion(g , l);
+	temp3 = translation(g,r ) ;
+	if(a == Plus)
+	{
+		t->write(t , temp," =  ( ", temp2,") + (",temp3," ); ",NULL );
+	}
+	else if(a == Minus)
+	{
+		t->write(t , temp," =  ( ", temp2,") - (",temp3," ); ",NULL );
+	}
+	else if(a == Mul)
+	{
+		t->write(t , temp," =  ( ", temp2,") * (",temp3," ); ",NULL );
+	}
+	else 	
+	{
+		//if(a == Div)
+		t->write(t , temp," =  ( ", temp2,") / (",temp3," ); ",NULL );
+	}
+	return temp;
+}
+
+translateUnary(struct codegen *g ,struct Expression * e)
+{
+	struct output_w * t;
+	t = g->writer;
+	struct Expresssion * l, * r;
+	r = e->node.oper.rop;
+	enum Exop a = e->node.oper.oper;
+	char * temp , * temp2 ,* temp3;
+	temp = newStringptr(512);
+	strcpy(temp ,maketempVar());
+	t->write(t," float  ",temp , " ; ",NULL);
+	temp2 = translateExpression(g, r );
+	if(a == Uminus)
+	{
+		t->write(t ," =  -(",temp2,"); ");
+	}
+	else
+	{
+		t->write(t ," =  (",temp2,"); ");	
+ 	}
+	return; 
+}
+
+static char * translateArray(struct codegen * g ,struct Expresssion * e)
+{
+	struct Expression * l , * r;
+	char * temp , * temp2 , * temp3;
+	l = e->node.oper.lop;
+	r = e->node.oper.rop;
+	temp = newStringptr(512);
+	temp2 = translateExpression(g,l);
+	temp3 = translateExpression(g,r);
+	multStringCat(temp, temp3,"[" ,temp2, "] ",NULL);
+	delString(temp2);
+	delString(temp3);
+	return temp;
+}
+static char * translateFcall(struct codegen * g ,struct Expression * e)
+{ 
+    
+    struct Expression *l, * r, * p ;
+    char * temp1 , * temp2, * temp3 ;
+    l = e->node.oper.lop;
+    r  = e->node.oper.rop;
+    temp2 = translateExpression(g, l);
+    temp1 = newStringptr(512);
+    multStringCat(temp1,temp2, "( ", NULL);
+    delString(temp2);
+    int i = 0;
+    for(p = r ; p != NULL;  p->next)
+    {
+	temp2 = translateExpression(g , p);
+	if(i == 0)
+	{
+	     multStringCat(temp1,temp2, NULL);
+	     i++;
+	}
+	else
+	{
+	    multStringCat(temp1,temp2,",", NULL);
+	}
+	delString(temp2);
+    }
+    
+    multStringCat(temp1,")",NULL);
+    return temp1;
+    
+}
+
+
+static char * translateMod(struct codegen *g ,struct Expression * e)
+{
+	char * temp,temp1 , temp2 ;
+	temp = newStringptr(512);
+	struct Expression *l , *r;
+	l = e->node.oper.lop;
+	r = e->node.oper.rop;
+	temp1 = translateExpression(g , l);
+	temp2 = translateExpression(g , r);
+	multStringCat(temp,"Mod( ",temp1,","temp2,")",NULL);
+	delString(temp1);
+	delString(temp2);
+	return temp;
+}
+
+char * maketempVar(void)
+{
+	static char Id[32] = "__v"
+	static int id  = 0;
+	int t, a = 3 ;
+	t = id;
+	do
+	{
+		Id[a++] = t + '0';
+		t /= 10;
+	}while(t);
+	id++;
+	Id[ i] = '\0';
+	return Id;
+}
+
+
+//stack based memory allocation and dealocation routines
+
+#define HEAP_SIZ 5120
+static char  heap[HEAP_SIZE];
+char * hptr  = heap;
+
+char * newStringptr(int size)
+{
+	char * p;
+	if( hptr + size < HEAP_SIZ )
+	{
+		 p = hptr;
+		hptr += size;  
+	}
+	else
+	{
+		p =  (char *)malloc(sizeof(char) * size); 
+	}
+	if(p != NULL)
+	{
+		p[0] = '\0';
+	}
+	return p;
+} 
+
+static void delString(char * p )
+{
+	if(p >= heap  && p <= heap + HEAP_SIZ)
+	{
+			hptr = p;
+	}
+	else
+	{
+		free(p);
+	}
+}
+
+
+

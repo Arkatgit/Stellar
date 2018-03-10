@@ -1,0 +1,25 @@
+
+
+
+var int dff := 56 + 45 -45 +  66;
+dff := 4;
+const float bee := 5 + 4 + 4;
+
+function void pee(int c[3] : int h)
+{
+   c[2] := 5;
+    var float umne;
+   array int r[3];
+   r[4] := 6;
+   dff := 45 + umne / bee ;
+   dff := 44 + h;
+   h := 6;
+   var int p;
+   return   3 + 3 + 3 mod 3 *23 *23 -3 * pee(4 :45) + pee();
+}
+
+ var int i  := 1;
+while  ( i  < 10 ) do 
+{
+ i :=  i + 1;
+}

@@ -1,0 +1,52 @@
+$trial proram in experimental program
+var int count := 43;  $ varible declaration
+const  int ss := 34 ;
+$const  int ssd := 34 ;
+$const  int ssfd := 34 ;
+$const  int sssfd := 34 ;
+
+array  int men[34] ; 
+function int load( int a : float b  : int c : char d)  $function definition
+{
+	var char g :=  'f';
+	$var int w := 4;
+	var bool k := false;
+	var int w;
+	w :=  45 mod 3 ;
+	$q := p;
+	men[3]  := 45;
+	return a;	
+}
+	var int diff;
+	diff :=  455;
+	
+	
+function  bool  load2( int p : float  l :  bool s ) 
+{
+   if p = 4   and l = 6  then   {
+   
+        return s;
+   
+   }
+ 
+}	
+	
+	
+	while(diff  < 4 +3 * 18 -45) do {
+	$ss :=5;
+	}
+	
+   if diff = 4 then {                 }	
+   elseif  diff > 3 then {} 
+   elseif ss mod 2 = 0 then {}
+     $ss := 4 + load2(2:3.4:false);  }
+   else 
+   {
+       diff := 40; 
+   }
+	
+call load2(load(12:23:12:44) : 3.23: false);
+call load(32 : 34.3 :23 : 34); 
+
+
+
